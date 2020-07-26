@@ -1,0 +1,209 @@
+<!DOCTYPE html><html lang="zh-cn" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>计算器(tkinter库的使用) | 一切暗号</title><meta name="description" content="计算器 作者promethus-code 要用到的库 tkinter库  开始思路 python的shell框里输入加减乘除可以直接给出答案  python的内置函数eval()函数可以执行一个字符串表达式，并返回表达式的值。  tkinter库可以给我们提供按钮输入数字和运算符，也可以提供文本框显示值。   tkinter库里可能用到的函数以及选项 注：选项里的master只是表示主容器名，可以"><meta name="keywords" content="tkinter"><meta name="author" content="prometheus-code"><meta name="copyright" content="prometheus-code"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://prometheus-code.github.io/2020/07/26/tkinter%E5%BA%93%E5%AE%9E%E8%B7%B5/tkinter-test/"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta property="og:type" content="article"><meta property="og:title" content="计算器(tkinter库的使用)"><meta property="og:url" content="https://prometheus-code.github.io/2020/07/26/tkinter%E5%BA%93%E5%AE%9E%E8%B7%B5/tkinter-test/"><meta property="og:site_name" content="一切暗号"><meta property="og:description" content="计算器 作者promethus-code 要用到的库 tkinter库  开始思路 python的shell框里输入加减乘除可以直接给出答案  python的内置函数eval()函数可以执行一个字符串表达式，并返回表达式的值。  tkinter库可以给我们提供按钮输入数字和运算符，也可以提供文本框显示值。   tkinter库里可能用到的函数以及选项 注：选项里的master只是表示主容器名，可以"><meta property="og:image" content="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg"><meta property="article:published_time" content="2020-07-26T12:45:53.000Z"><meta property="article:modified_time" content="2020-07-26T12:50:40.093Z"><meta name="twitter:card" content="summary"><script>var activateDarkMode = function () {
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000')
+  }
+}
+var activateLightMode = function () {
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fff')
+  }
+}
+
+var getCookies = function (name) {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
+}
+
+var autoChangeMode = 'false'
+var t = getCookies('theme')
+if (autoChangeMode === '1') {
+  var isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+  var isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+  var isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined) {
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport) {
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour <= 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+      if (Cookies.get('theme') === undefined) {
+        e.matches ? activateDarkMode() : activateLightMode()
+      }
+    })
+  } else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else if (autoChangeMode === '2') {
+  now = new Date()
+  hour = now.getHours()
+  isNight = hour <= 6 || hour >= 18
+  if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else {
+  if (t === 'dark') activateDarkMode()
+  else if (t === 'light') activateLightMode()
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="next" title="感知机" href="https://prometheus-code.github.io/2020/07/26/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/%E6%84%9F%E7%9F%A5%E6%9C%BA/"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  bookmark: {
+    message_prev: 'Press',
+    message_next: 'to bookmark this page'
+  },
+  runtime_unit: 'days',
+  runtime: false,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false    
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true
+  }</script><noscript><style>
+#nav {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 4.2.1"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">Articles</div><div class="length_num">3</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">Tags</div><div class="length_num">2</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">Categories</div><div class="length_num">2</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#计算器"><span class="toc-number">1.</span> <span class="toc-text">计算器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#作者"><span class="toc-number">2.</span> <span class="toc-text">作者</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#要用到的库"><span class="toc-number">2.1.</span> <span class="toc-text">要用到的库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#开始思路"><span class="toc-number">2.2.</span> <span class="toc-text">开始思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#tkinter库里可能用到的函数以及选项"><span class="toc-number">2.3.</span> <span class="toc-text">tkinter库里可能用到的函数以及选项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#其他注意事项"><span class="toc-number">2.4.</span> <span class="toc-text">其他注意事项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#可视化框架建设"><span class="toc-number">2.5.</span> <span class="toc-text">可视化框架建设</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-标题"><span class="toc-number">2.5.1.</span> <span class="toc-text">1.标题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-label显示区"><span class="toc-number">2.5.2.</span> <span class="toc-text">2.label显示区</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-文本框"><span class="toc-number">2.5.3.</span> <span class="toc-text">3.文本框</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1按钮区的布置"><span class="toc-number">2.5.4.</span> <span class="toc-text">4.1按钮区的布置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2按钮区的函数调用"><span class="toc-number">2.5.5.</span> <span class="toc-text">4.2按钮区的函数调用</span></a></li></ol></li></ol></li></ol></div></div></div><div id="body-wrap"><div id="web_bg" data-type="photo"></div><header class="post-bg" id="page-header" style="background-image: url(https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg)"><nav id="nav"><span class="pull-left" id="blog_name"><a class="blog_title" id="site-name" href="/">一切暗号</a></span><span class="pull-right menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">计算器(tkinter库的使用)</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="Created 2020-07-26 20:45:53"><i class="far fa-calendar-alt fa-fw"></i> Created 2020-07-26</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="Updated 2020-07-26 20:50:40"><i class="fas fa-history fa-fw"></i> Updated 2020-07-26</span></time><span class="post-meta__categories"><span class="post-meta__separator">|</span><i class="fas fa-inbox fa-fw post-meta__icon"></i><a class="post-meta__categories" href="/categories/tkinter%E5%BA%93%E5%AE%9E%E8%B7%B5/">tkinter库实践</a></span></div><div class="meta-secondline"> </div><div class="meta-thirdline"><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta__icon"></i><span>Post View:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h1 id="计算器"><a href="#计算器" class="headerlink" title="计算器"></a>计算器</h1><p><img src= "/img/loading.gif" data-src="https://img.shields.io/github/license/prometheus-code/tk-" alt="GitHub"></p>
+<h1 id="作者"><a href="#作者" class="headerlink" title="作者"></a>作者</h1><p>promethus-code</p>
+<h2 id="要用到的库"><a href="#要用到的库" class="headerlink" title="要用到的库"></a>要用到的库</h2><ul>
+<li>tkinter库</li>
+</ul>
+<h2 id="开始思路"><a href="#开始思路" class="headerlink" title="开始思路"></a>开始思路</h2><ol>
+<li><p>python的shell框里输入加减乘除可以直接给出答案</p>
+</li>
+<li><p>python的内置函数eval()函数可以执行一个字符串表达式，并返回表达式的值。</p>
+</li>
+<li><p>tkinter库可以给我们提供按钮输入数字和运算符，也可以提供文本框显示值。</p>
+</li>
+</ol>
+<h2 id="tkinter库里可能用到的函数以及选项"><a href="#tkinter库里可能用到的函数以及选项" class="headerlink" title="tkinter库里可能用到的函数以及选项"></a>tkinter库里可能用到的函数以及选项</h2><ul>
+<li>注：选项里的master只是表示主容器名，可以替换</li>
+</ul>
+<ol>
+<li>Label(master,width= ,anchor= ,textvariable= )</li>
+<li>Button(master,width= ,text= ,command= )</li>
+<li>Entry(master,width= ,justify= )</li>
+</ol>
+<h2 id="其他注意事项"><a href="#其他注意事项" class="headerlink" title="其他注意事项"></a>其他注意事项</h2><ol>
+<li>Button里的command是只能调用函数，不能使用方法，所以为了实现command使用方法可以用匿名函数lambda</li>
+<li>多次调用Button时，可能会出现一些要多次重复的选项，这时可以使用functools模块里的partial()函数固定住这些选项的输入</li>
+</ol>
+<h2 id="可视化框架建设"><a href="#可视化框架建设" class="headerlink" title="可视化框架建设"></a>可视化框架建设</h2><p><img src= "/img/loading.gif" data-src="https://raw.githubusercontent.com/prometheus-code/tk-/master/image/1.jpg" alt="image"></p>
+<p>​                                                                        预览图片</p>
+<ul>
+<li>根据预览图片大体可以分为四个部分:</li>
+</ul>
+<ol>
+<li><p>标题</p>
+</li>
+<li><p>label显示区</p>
+</li>
+<li><p>文本框</p>
+</li>
+<li><p>按键区</p>
+</li>
+</ol>
+<h3 id="1-标题"><a href="#1-标题" class="headerlink" title="1.标题"></a>1.标题</h3><p>​    首先我们先导入模块并创建一个窗口</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">import tkinter as tk</span><br><span class="line">import tkinter.messagebox </span><br><span class="line">root&#x3D;tk.Tk()</span><br><span class="line">root.title(&quot;计算器&quot;)</span><br><span class="line">&quot;&quot;&quot;</span><br><span class="line">后面在这里写label显示区，文本框和按键区的代码，并删去备注</span><br><span class="line">&quot;&quot;&quot;</span><br><span class="line">root.mainloop()</span><br></pre></td></tr></table></figure>
+<p>大体如下</p>
+<p><img src= "/img/loading.gif" data-src="https://raw.githubusercontent.com/prometheus-code/tk-/master/image/3.jpg" alt="image"></p>
+<h3 id="2-label显示区"><a href="#2-label显示区" class="headerlink" title="2.label显示区"></a>2.label显示区</h3><ul>
+<li><p>做这个的思路是来自window里的计算器里放结果的地方无法直接通过键盘修改数字所以选用Label，当然也可以用文本框代替</p>
+</li>
+<li><p>作用:保留上一个运算式和结果并显示出来</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">text1&#x3D;tk.StringVar()</span><br><span class="line">label1 &#x3D;tk.Label(root, width&#x3D;25,anchor&#x3D;&#39;se&#39;,textvariable&#x3D;text1)#显示的文本内容向右对齐</span><br><span class="line">label1.grid(row&#x3D;0,column&#x3D;0,columnspan&#x3D;5)#把label1放在窗口里的第一行</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>大体如下</p>
+<p><img src= "/img/loading.gif" data-src="https://raw.githubusercontent.com/prometheus-code/tk-/master/image/4.jpg" alt="image"></p>
+<p>   在root.mainloop前加一段测试label(测试完后删去这段)</p>
+<blockquote>
+<p>text1.set(“hello world”)</p>
+</blockquote>
+<p> <img src= "/img/loading.gif" data-src="https://raw.githubusercontent.com/prometheus-code/tk-/master/image/5.jpg" alt="image"></p>
+<h3 id="3-文本框"><a href="#3-文本框" class="headerlink" title="3.文本框"></a>3.文本框</h3><ul>
+<li><p>作用:作为开始计算运算式前的缓存区</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">entry1&#x3D;tk.Entry(root, width&#x3D;25, justify&#x3D;&quot;right&quot;)#使输入从右往左 </span><br><span class="line">entry1.grid(row&#x3D;1, column&#x3D;0, columnspan&#x3D;5, sticky&#x3D;tk.N + tk.W + tk.S + tk.E)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>大体如下</p>
+<p><img src= "/img/loading.gif" data-src="https://raw.githubusercontent.com/prometheus-code/tk-/master/image/6.jpg" alt="image"></p>
+<p>可能有点看不到文本框的显示，我随便写几个数字进去</p>
+<p><img src= "/img/loading.gif" data-src="https://raw.githubusercontent.com/prometheus-code/tk-/master/image/7.jpg" alt="image"></p>
+<p>这样就完成了以上三个部分。</p>
+<h3 id="4-1按钮区的布置"><a href="#4-1按钮区的布置" class="headerlink" title="4.1按钮区的布置"></a>4.1按钮区的布置</h3><ul>
+<li>这个部分可能是工程量最大的地方，我们先搞好布局，再考虑按钮调用的问题<ul>
+<li>关于布局可以参考我的布局</li>
+<li><img src= "/img/loading.gif" data-src="https://raw.githubusercontent.com/prometheus-code/tk-/master/image/1.jpg" alt="image"></li>
+</ul>
+</li>
+</ul>
+<p>我们先安放两行按钮</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">button_z1&#x3D; tk.Button(width&#x3D;5,text&#x3D;&#39;(&#39;) </span><br><span class="line">button_z2&#x3D; tk.Button(width&#x3D;5,text&#x3D;&#39;)&#39;)</span><br><span class="line">button_clear&#x3D; tk.Button(width&#x3D;5,text&#x3D;&#39;C&#39;)</span><br><span class="line">button_del&#x3D; tk.Button(width&#x3D;5,text&#x3D;&#39;←&#39;)</span><br><span class="line">button_rem&#x3D; tk.Button(width&#x3D;5,text&#x3D;&#39;%&#39;)</span><br><span class="line"></span><br><span class="line">button_z1.grid(row&#x3D;2, column&#x3D;0)</span><br><span class="line">button_z2.grid(row&#x3D;2, column&#x3D;1)</span><br><span class="line">button_clear.grid(row&#x3D;2, column&#x3D;2)</span><br><span class="line">button_del.grid(row&#x3D;2, column&#x3D;3)</span><br><span class="line">button_rem.grid(row&#x3D;2, column&#x3D;4,rowspan&#x3D;2,sticky&#x3D;tk.N+tk.S)</span><br><span class="line"></span><br><span class="line">button_7&#x3D; tk.Button(width&#x3D;5,text&#x3D;&#39; 7 &#39;)</span><br><span class="line">button_8&#x3D; tk.Button(width&#x3D;5,text&#x3D;&#39; 8 &#39;)</span><br><span class="line">button_9&#x3D; tk.Button(width&#x3D;5,text&#x3D;&#39; 9 &#39;)</span><br><span class="line">button_div&#x3D; tk.Button(width&#x3D;5,text&#x3D;&#39; &#x2F; &#39;)</span><br><span class="line">        </span><br><span class="line">button_7.grid(row&#x3D;3, column&#x3D;0)</span><br><span class="line">button_8.grid(row&#x3D;3, column&#x3D;1)</span><br><span class="line">button_9.grid(row&#x3D;3, column&#x3D;2)</span><br><span class="line">button_div.grid(row&#x3D;3, column&#x3D;3)</span><br></pre></td></tr></table></figure>
+<p>大体如下</p>
+<p><img src= "/img/loading.gif" data-src="https://raw.githubusercontent.com/prometheus-code/tk-/master/image/8.jpg" alt="image"></p>
+<ul>
+<li>我们把按钮的宽度定为5是因为我们前面的label显示区和文本框的宽度都定为25，为了安放5个按钮一行，所以我们定位一个按钮的宽度为5.</li>
+</ul>
+<p>接下来到剩下的三行按钮</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">button_4&#x3D;tk.Button(width&#x3D;5,text&#x3D;&#39; 4 &#39;)</span><br><span class="line">button_5&#x3D;tk.Button(width&#x3D;5,text&#x3D;&#39; 5 &#39;)</span><br><span class="line">button_6&#x3D;tk.Button(width&#x3D;5,text&#x3D;&#39; 6 &#39;)</span><br><span class="line">button_multiply&#x3D;tk.Button(width&#x3D;5,text&#x3D;&#39; * &#39;)</span><br><span class="line">button_is&#x3D;tk.Button(width&#x3D;5,text&#x3D;&#39; \n &#x3D; \n &#39;)</span><br><span class="line"></span><br><span class="line">button_4.grid(row&#x3D;4, column&#x3D;0)</span><br><span class="line">button_5.grid(row&#x3D;4, column&#x3D;1)</span><br><span class="line">button_6.grid(row&#x3D;4, column&#x3D;2)</span><br><span class="line">button_multiply.grid(row&#x3D;4, column&#x3D;3)</span><br><span class="line">button_is.grid(row&#x3D;4, column&#x3D;4, rowspan&#x3D;5,sticky&#x3D;tk.N+tk.S)</span><br><span class="line"></span><br><span class="line">button_1&#x3D;tk.Button(width&#x3D;5,text&#x3D;&#39; 1 &#39;)</span><br><span class="line">button_2&#x3D;tk.Button(width&#x3D;5,text&#x3D;&#39; 2 &#39;)</span><br><span class="line">button_3&#x3D;tk.Button(width&#x3D;5,text&#x3D;&#39; 3 &#39;)</span><br><span class="line">button_minus&#x3D;tk.Button(width&#x3D;5,text&#x3D;&#39; - &#39;)</span><br><span class="line"></span><br><span class="line">button_1.grid(row&#x3D;5, column&#x3D;0)</span><br><span class="line">button_2.grid(row&#x3D;5, column&#x3D;1)</span><br><span class="line">button_3.grid(row&#x3D;5, column&#x3D;2)</span><br><span class="line">button_minus.grid(row&#x3D;5, column&#x3D;3)</span><br><span class="line"></span><br><span class="line">button_help&#x3D;tk.Button(width&#x3D;5,text&#x3D;&#39;HELP&#39;,command&#x3D;lambda:tkinter.messagebox.showinfo(&#39;\</span><br><span class="line">提示&#39;,&#39;基本按照你想的去做就可以了，不过只能进行简单的运算&#39;))#这里怕麻烦提前写上help键的调用</span><br><span class="line">button_0&#x3D;tk.Button(width&#x3D;5,text&#x3D;&#39; 0 &#39;)</span><br><span class="line">button_point&#x3D;tk.Button(width&#x3D;5,text&#x3D;&#39; . &#39;)</span><br><span class="line">button_add&#x3D;tk.Button(width&#x3D;5,text&#x3D;&#39; + &#39;)</span><br><span class="line"></span><br><span class="line">button_help.grid(row&#x3D;6, column&#x3D;0)</span><br><span class="line">button_0.grid(row&#x3D;6, column&#x3D;1)</span><br><span class="line">button_point.grid(row&#x3D;6, column&#x3D;2)</span><br><span class="line">button_add.grid(row&#x3D;6, column&#x3D;3)</span><br></pre></td></tr></table></figure>
+<p><img src= "/img/loading.gif" data-src="https://raw.githubusercontent.com/prometheus-code/tk-/master/image/1.jpg" alt="image"></p>
+<p>布局就这样完成了。</p>
+<h3 id="4-2按钮区的函数调用"><a href="#4-2按钮区的函数调用" class="headerlink" title="4.2按钮区的函数调用"></a>4.2按钮区的函数调用</h3><ul>
+<li><p>我们完成了布局，现在在我们面前就只有一个问题了，我们如何用起这些按钮？</p>
+</li>
+<li><p>前文提到了我们可以利用eval函数来帮助我们实现计算结果</p>
+</li>
+</ul>
+<p>那我们可以直接使用字符串来帮助我们实现计算结果。</p>
+<p>对于 1 2 3 4 5 6 7 8 9 （ ）/ * - + % . 这些键我们可以直接这样写</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">button_z1&#x3D; tk.Button(width&#x3D;5,text&#x3D;&#39;(&#39;,command&#x3D;lambda:entry1.insert(INSERT,&#39; ( &#39;))</span><br></pre></td></tr></table></figure>
+<p>在后面用文本框的方法把对应的字符加上去</p>
+<ul>
+<li><p>但对于 = C ←这三个键我们就要特别对待了</p>
+<ul>
+<li><p>‘ = ‘键的command内容enter函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">def enter():</span><br><span class="line">	en&#x3D;eval(entry1.get())</span><br><span class="line">	el&#x3D;entry1.get()</span><br><span class="line">	text1.set(el+&#39;&#x3D;&#39;+str(en))</span><br><span class="line">	entry1.delete(0,END)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>‘ c ‘键的command内容clear函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def clear():</span><br><span class="line">	entry1.delete(0,END)</span><br><span class="line">	text1.set(&#39; &#39;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>‘ ← ‘键</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">button_del&#x3D; tk.Button(width&#x3D;5,text&#x3D;&#39;←&#39;，command&#x3D;lambda:entry1.delete(len(entry.get()) -1))</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined">prometheus-code</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="https://prometheus-code.github.io/2020/07/26/tkinter%E5%BA%93%E5%AE%9E%E8%B7%B5/tkinter-test/">https://prometheus-code.github.io/2020/07/26/tkinter%E5%BA%93%E5%AE%9E%E8%B7%B5/tkinter-test/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/tkinter/">tkinter</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2020/07/26/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/%E6%84%9F%E7%9F%A5%E6%9C%BA/"><img class="next-cover" data-src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1595764414107&amp;di=93ee542045570b12290d1eb21dff2e30&amp;imgtype=0&amp;src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20180319%2F66179109ed054505ba02b054d711dbd1.jpeg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">感知机</div></div></a></div></nav></article></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2020 By prometheus-code</div><div class="framework-info"><span>Driven </span><a href="https://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><button id="readmode" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="font_plus" title="Increase Font Size"><i class="fas fa-plus"></i></button><button id="font_minus" title="Decrease Font Size"><i class="fas fa-minus"></i></button><button class="translate_chn_to_cht" id="translateLink" title="Switch Between Traditional Chinese And Simplified Chinese">繁</button><button id="darkmode" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" title="Setting"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></section><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js" async></script></body></html>
