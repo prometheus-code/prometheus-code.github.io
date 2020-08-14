@@ -1,0 +1,437 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>tensorflow2.0基础与进阶 | 一切暗号</title><meta name="description" content="tf.Tensor list np.array tf.Tensor   为了实现gpu加速，所以重新开发了科学计算库  基本类型 scalar: 1.1 vector:[1.1,2.2,3.3] matrix:[[1.1,2.2],[3.3,4.4]] Tensor:dim&gt;2   在 TensorFlow 中间，为了表达方便，一般把标量、向量、矩阵也统称为张量，不作区分，需要根据张量的维度"><meta name="keywords" content="神经网络,深度学习入门，tensorflow"><meta name="author" content="prometheus-code"><meta name="copyright" content="prometheus-code"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://prometheus-code.github.io/2020/08/12/tensorflow/tf01/"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta property="og:type" content="article"><meta property="og:title" content="tensorflow2.0基础与进阶"><meta property="og:url" content="https://prometheus-code.github.io/2020/08/12/tensorflow/tf01/"><meta property="og:site_name" content="一切暗号"><meta property="og:description" content="tf.Tensor list np.array tf.Tensor   为了实现gpu加速，所以重新开发了科学计算库  基本类型 scalar: 1.1 vector:[1.1,2.2,3.3] matrix:[[1.1,2.2],[3.3,4.4]] Tensor:dim&gt;2   在 TensorFlow 中间，为了表达方便，一般把标量、向量、矩阵也统称为张量，不作区分，需要根据张量的维度"><meta property="og:image" content="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1597325218551&amp;di=c155f06387bf214ef2017c6db8da3e20&amp;imgtype=0&amp;src=http%3A%2F%2Fwww.wdshouji.com%2Fwp%2Fwp-content%2Fuploads%2F2019%2F03%2F0a67a5c11f1647bfd324fa0d0f7faab5.jpg"><meta property="article:published_time" content="2020-08-12T02:59:34.000Z"><meta property="article:modified_time" content="2020-08-14T04:03:32.151Z"><meta name="twitter:card" content="summary"><script>var activateDarkMode = function () {
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000')
+  }
+}
+var activateLightMode = function () {
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fff')
+  }
+}
+
+var getCookies = function (name) {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
+}
+
+var autoChangeMode = 'false'
+var t = getCookies('theme')
+if (autoChangeMode === '1') {
+  var isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+  var isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+  var isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined) {
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport) {
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour <= 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+      if (Cookies.get('theme') === undefined) {
+        e.matches ? activateDarkMode() : activateLightMode()
+      }
+    })
+  } else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else if (autoChangeMode === '2') {
+  now = new Date()
+  hour = now.getHours()
+  isNight = hour <= 6 || hour >= 18
+  if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else {
+  if (t === 'dark') activateDarkMode()
+  else if (t === 'light') activateLightMode()
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="next" title="改善深层神经网络：超参数调试、正则化以及优化" href="https://prometheus-code.github.io/2020/08/12/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/%E6%94%B9%E5%96%84%E6%B7%B1%E5%B1%82%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%EF%BC%9A%E8%B6%85%E5%8F%82%E6%95%B0%E8%B0%83%E8%AF%95%E3%80%81%E6%AD%A3%E5%88%99%E5%8C%96%E4%BB%A5%E5%8F%8A%E4%BC%98%E5%8C%96/"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false    
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true
+  }</script><noscript><style>
+#nav {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 4.2.1"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">25</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">11</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">9</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li><li><a class="site-page" href="/categories/novel/"><i class="fa-fw fas fa-book"></i><span> novel</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#tf-Tensor"><span class="toc-number">1.</span> <span class="toc-text">tf.Tensor</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#基本类型"><span class="toc-number">1.1.</span> <span class="toc-text">基本类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#tf-constant"><span class="toc-number">1.2.</span> <span class="toc-text">tf.constant()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#tf-Variable"><span class="toc-number">1.3.</span> <span class="toc-text">tf.Variable</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#创建一个tensor"><span class="toc-number">2.</span> <span class="toc-text">创建一个tensor</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#转换numpy类型"><span class="toc-number">2.1.</span> <span class="toc-text">转换numpy类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#全部初始化为指定值"><span class="toc-number">2.2.</span> <span class="toc-text">全部初始化为指定值</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#tf-zeros"><span class="toc-number">2.2.1.</span> <span class="toc-text">tf.zeros( )</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tf-ones"><span class="toc-number">2.2.2.</span> <span class="toc-text">tf.ones( )</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tf-fill-shape-value"><span class="toc-number">2.2.3.</span> <span class="toc-text">tf.fill(shape,value)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建已知分布的张量"><span class="toc-number">2.3.</span> <span class="toc-text">创建已知分布的张量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#正态分布"><span class="toc-number">2.3.1.</span> <span class="toc-text">正态分布</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#均匀分布"><span class="toc-number">2.3.2.</span> <span class="toc-text">均匀分布</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创造序列"><span class="toc-number">2.3.3.</span> <span class="toc-text">创造序列</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#索引与切片"><span class="toc-number">2.4.</span> <span class="toc-text">索引与切片</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Basic-indexing-and-Numpy-style-indexing"><span class="toc-number">2.4.1.</span> <span class="toc-text">Basic indexing and Numpy-style indexing</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#start-end-step"><span class="toc-number">2.4.2.</span> <span class="toc-text">start : end :step</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Selective-Indexing"><span class="toc-number">2.4.3.</span> <span class="toc-text">Selective Indexing</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#维度变换"><span class="toc-number">2.5.</span> <span class="toc-text">维度变换</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#tf-reshape-x-new-shape"><span class="toc-number">2.5.1.</span> <span class="toc-text">tf.reshape(x, new_shape)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tf-expand-dims-x-axis-和-tf-squeeze-x-axis"><span class="toc-number">2.5.2.</span> <span class="toc-text">tf.expand_dims(x,axis) 和 tf.squeeze(x,axis)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tf-transpose-x-perm"><span class="toc-number">2.5.3.</span> <span class="toc-text">tf.transpose(x,perm)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#广播"><span class="toc-number">2.5.4.</span> <span class="toc-text">广播</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#基本运算"><span class="toc-number">3.</span> <span class="toc-text">基本运算</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#前向传播实战"><span class="toc-number">4.</span> <span class="toc-text">前向传播实战</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#进阶操作"><span class="toc-number">5.</span> <span class="toc-text">进阶操作</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#合并与分割"><span class="toc-number">5.1.</span> <span class="toc-text">合并与分割</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#tf-concat-axis"><span class="toc-number">5.1.1.</span> <span class="toc-text">tf.concat([,],axis)</span></a></li></ol></li></ol></li></ol></div></div></div><div id="body-wrap"><div id="web_bg" data-type="photo"></div><header class="post-bg" id="page-header" style="background-image: url(https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1597325218551&amp;di=c155f06387bf214ef2017c6db8da3e20&amp;imgtype=0&amp;src=http%3A%2F%2Fwww.wdshouji.com%2Fwp%2Fwp-content%2Fuploads%2F2019%2F03%2F0a67a5c11f1647bfd324fa0d0f7faab5.jpg)"><nav id="nav"><span class="pull-left" id="blog_name"><a class="blog_title" id="site-name" href="/">一切暗号</a></span><span class="pull-right menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li><li><a class="site-page" href="/categories/novel/"><i class="fa-fw fas fa-book"></i><span> novel</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">tensorflow2.0基础与进阶</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2020-08-12 10:59:34"><i class="far fa-calendar-alt fa-fw"></i> 发表于 2020-08-12</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2020-08-14 12:03:32"><i class="fas fa-history fa-fw"></i> 更新于 2020-08-14</span></time><span class="post-meta__categories"><span class="post-meta__separator">|</span><i class="fas fa-inbox fa-fw post-meta__icon"></i><a class="post-meta__categories" href="/categories/tensorflow%E5%85%A5%E9%97%A8/">tensorflow入门</a></span></div><div class="meta-secondline"> </div><div class="meta-thirdline"><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta__icon"></i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h1 id="tf-Tensor"><a href="#tf-Tensor" class="headerlink" title="tf.Tensor"></a>tf.Tensor</h1><ul>
+<li>list</li>
+<li>np.array</li>
+<li>tf.Tensor</li>
+</ul>
+<hr>
+<p>为了实现gpu加速，所以重新开发了科学计算库</p>
+<hr>
+<h2 id="基本类型"><a href="#基本类型" class="headerlink" title="基本类型"></a>基本类型</h2><ul>
+<li>scalar: 1.1</li>
+<li>vector:[1.1,2.2,3.3]</li>
+<li>matrix:[[1.1,2.2],[3.3,4.4]]</li>
+<li>Tensor:dim&gt;2</li>
+</ul>
+<blockquote>
+<p>在 TensorFlow 中间，为了表达方便，一般把标量、向量、矩阵也统称为张量，不作区分，需要根据张量的维度数或形状自行判断</p>
+</blockquote>
+<hr>
+<ul>
+<li><p>int,float,double </p>
+<blockquote>
+<p>int32,int64,float32,float64</p>
+</blockquote>
+</li>
+<li><p>bool</p>
+</li>
+<li><p>string</p>
+</li>
+</ul>
+<hr>
+<h2 id="tf-constant"><a href="#tf-constant" class="headerlink" title="tf.constant()"></a>tf.constant()</h2><blockquote>
+<p>用来创建一个标量</p>
+</blockquote>
+<p>可以用以下方法:</p>
+<ul>
+<li>.gpu( ) :使用gpu</li>
+<li>.cpu( )  :使用cpu</li>
+<li>.numpy( ) :返回当前值的numpy的数据类型</li>
+<li>.nidm : 返回维度</li>
+<li>.shape :返回形状</li>
+</ul>
+<hr>
+<p>tf.rank( ) :</p>
+<blockquote>
+<p>可以用来查看张量对象的所有信息</p>
+</blockquote>
+<p>tf.is_tensor( ):</p>
+<blockquote>
+<p>用来判断是否是tf.tensor类型</p>
+</blockquote>
+<p>tf.convert_to_tensor( ):</p>
+<blockquote>
+<p>可以把numpy类型转化为tensor类型</p>
+</blockquote>
+<p>tf.cast(x,dtype=)</p>
+<blockquote>
+<p>可以转化类型的精度</p>
+</blockquote>
+<h2 id="tf-Variable"><a href="#tf-Variable" class="headerlink" title="tf.Variable"></a>tf.Variable</h2><blockquote>
+<p>创建一个待优化张量</p>
+<blockquote>
+<p>由于梯度运算会消耗大量的计算资源，而且会自动更新相关参数，对于不需要的优化的张量，如神经网络的输入𝑿，不需要通过tf.Variable 封装；相反，对于需要计算梯度并优化的张量，如神经网络层的𝑾和𝒃，需要通过tf.Variable 包裹以便TensorFlow 跟踪相关梯度信息。</p>
+</blockquote>
+</blockquote>
+<p>比起普通张量多了两个属性【对象属性】:</p>
+<ul>
+<li><p>name</p>
+<blockquote>
+<p>name 属性用于命名计算图中的变量，这套命名体系是TensorFlow 内部维护的，一般不需要用户关注name 属性</p>
+</blockquote>
+</li>
+<li><p>trainable</p>
+<blockquote>
+<p>trainable属性表征当前张量是否需要被优化，创建Variable 对象时是默认启用优化标志，可以设置<br>trainable=False 来设置张量不需要优化。</p>
+</blockquote>
+</li>
+</ul>
+<hr>
+<p>然而普通张量其实也可以通过GradientTape.watch()方法临时加入跟踪梯度信息的列表，从而支持自动求导功能。</p>
+<h1 id="创建一个tensor"><a href="#创建一个tensor" class="headerlink" title="创建一个tensor"></a>创建一个tensor</h1><h2 id="转换numpy类型"><a href="#转换numpy类型" class="headerlink" title="转换numpy类型"></a>转换numpy类型</h2><blockquote>
+<p> tf.constant( ) 或 tf.Varible( ) 或 tf.convert_to_tensor( ) </p>
+<p> 可以使用这三个函数来转化numpy类型来创建tensor</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">tf.convert_to_tensor(np.ones([<span class="number">2</span>,<span class="number">3</span>]),dtype=tf.float32)</span><br><span class="line"><span class="comment">#&lt;tf.Tensor: id=11, shape=(2, 3), dtype=float32, numpy=</span></span><br><span class="line"><span class="comment">#array([[1., 1., 1.],</span></span><br><span class="line"><span class="comment">#       [1., 1., 1.]], dtype=float32)&gt;</span></span><br><span class="line">tf.Variable(np.ones([<span class="number">2</span>,<span class="number">3</span>]))</span><br><span class="line"><span class="comment">#&lt;tf.Variable 'Variable:0' shape=(2, 3) dtype=float64, numpy=</span></span><br><span class="line"><span class="comment">#array([[1., 1., 1.],</span></span><br><span class="line"><span class="comment">#       [1., 1., 1.]])&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="全部初始化为指定值"><a href="#全部初始化为指定值" class="headerlink" title="全部初始化为指定值"></a>全部初始化为指定值</h2><h3 id="tf-zeros"><a href="#tf-zeros" class="headerlink" title="tf.zeros( )"></a>tf.zeros( )</h3><p>创建全0张量</p>
+<blockquote>
+<p>tf.zeros([ ])</p>
+<p>传入[1,2]类似np.zeros((1,2))或np.zeros([1,2])</p>
+</blockquote>
+<ul>
+<li><p>tf.zeros_like( )</p>
+<blockquote>
+<p>与np.zeros_like( )类似</p>
+</blockquote>
+</li>
+</ul>
+<hr>
+<h3 id="tf-ones"><a href="#tf-ones" class="headerlink" title="tf.ones( )"></a>tf.ones( )</h3><p>创建全1 张量</p>
+<blockquote>
+<p>使用方法同上</p>
+</blockquote>
+<ul>
+<li><p>tf.ones_like( )</p>
+<blockquote>
+<p>使用方法同上</p>
+</blockquote>
+</li>
+</ul>
+<hr>
+<h3 id="tf-fill-shape-value"><a href="#tf-fill-shape-value" class="headerlink" title="tf.fill(shape,value)"></a>tf.fill(shape,value)</h3><blockquote>
+<p>除了初始化为全0，或全1 的张量之外，有时也需要全部初始化为某个自定义数值的<br>张量，比如将张量的数值全部初始化为−1等。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">tf.fill([<span class="number">2</span>,<span class="number">2</span>],<span class="number">3</span>)</span><br><span class="line"><span class="comment">#&lt;tf.Tensor: id=13, shape=(2, 2), dtype=int32, numpy=</span></span><br><span class="line"><span class="comment">#array([[3, 3],</span></span><br><span class="line"><span class="comment">#       [3, 3]])&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="创建已知分布的张量"><a href="#创建已知分布的张量" class="headerlink" title="创建已知分布的张量"></a>创建已知分布的张量</h2><h3 id="正态分布"><a href="#正态分布" class="headerlink" title="正态分布"></a>正态分布</h3><p>tf.random.normal(shape, mean=0.0, stddev=1.0)</p>
+<blockquote>
+<p>可以创建形状为shape，均值为mean，标准差为stddev 的正态分布𝒩($mean, stddev^2$)。</p>
+</blockquote>
+<ul>
+<li><p>tf.random.truncated_normal(shape, mean=0.0, stddev=1.0)</p>
+<blockquote>
+<p>会截取正态分布的一部分，有利于sigmoid函数的梯度下降</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>tf.random.truncated_normal([<span class="number">3</span>,<span class="number">3</span>], mean=<span class="number">0.0</span>, stddev=<span class="number">1.0</span>)</span><br><span class="line">&lt;tf.Tensor: id=<span class="number">25</span>, shape=(<span class="number">3</span>, <span class="number">3</span>), dtype=float32, numpy=</span><br><span class="line">array([[ <span class="number">0.07241093</span>, <span class="number">-0.9492289</span> ,  <span class="number">1.1106242</span> ],</span><br><span class="line">       [<span class="number">-1.0468991</span> , <span class="number">-0.00725726</span>,  <span class="number">1.6111004</span> ],</span><br><span class="line">       [<span class="number">-1.2311684</span> ,  <span class="number">1.380989</span>  ,  <span class="number">0.62593746</span>]], dtype=float32)&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="均匀分布"><a href="#均匀分布" class="headerlink" title="均匀分布"></a>均匀分布</h3><p>tf.random.uniform(shape, minval=0, maxval=None, dtype=tf.float32)</p>
+<blockquote>
+<p>可以创建采样自[minval, maxval)区间的均匀分布的张量。</p>
+</blockquote>
+<ul>
+<li>如果需要均匀采样整形类型的数据，必须指定采样区间的最大值maxval 参数，同时指定数据类型为tf.int*型</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">tf.random.uniform([<span class="number">3</span>,<span class="number">3</span>],minval=<span class="number">1</span>,maxval=<span class="number">100</span>)</span><br><span class="line"><span class="comment">#&lt;tf.Tensor: id=32, shape=(3, 3), dtype=float32, numpy=</span></span><br><span class="line"><span class="comment">#array([[77.254425, 22.276836, 78.80216 ],</span></span><br><span class="line"><span class="comment">#      [68.57904 ,  3.394451, 20.12668 ],</span></span><br><span class="line"><span class="comment">#      [93.60507 , 49.33812 , 62.72094 ]], dtype=float32)&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="创造序列"><a href="#创造序列" class="headerlink" title="创造序列"></a>创造序列</h3><p>tf.range(limit,delta=1)</p>
+<blockquote>
+<p>tf.range(limit, delta=1)可以创建[0, limit)之间，步长为delta 的整型序列，不包含limit 本身。</p>
+</blockquote>
+<hr>
+<p>Scalar:</p>
+<ul>
+<li>[ ]</li>
+<li>loss</li>
+<li>accuracy</li>
+</ul>
+<p>Vector:</p>
+<ul>
+<li>Bias</li>
+<li>[out_dim]</li>
+</ul>
+<p>Matrix:</p>
+<ul>
+<li>input x:[b,vec_dim]</li>
+<li>weight:[input_dim,output_dim]</li>
+</ul>
+<p>Dim=3 Tensor:</p>
+<ul>
+<li>x: [b,seq_len,word_dim]</li>
+</ul>
+<blockquote>
+<p>一般将单词通过嵌入层(Embedding Layer)编码为固定长度的向量，比如“a”编码为某个长度3 的向量，那么2 个等长(单词数量为5)的句子序列可以表示为shape 为[2,5,3]的3 维张量，其中2 表示句子个数，5 表示单词数量，3 表示单词向量的长度。</p>
+</blockquote>
+<p>Dim=4 Tensor</p>
+<ul>
+<li>Image:[b,h,w,3]</li>
+<li>feature maps:[b,h,w,c]</li>
+</ul>
+<blockquote>
+<p>图片相关的处理</p>
+</blockquote>
+<p>Dim=5 Tensor</p>
+<ul>
+<li>Single task: [b,h,w,3]</li>
+<li>meta-learning: [task_b,b,h,w,3]</li>
+</ul>
+<h2 id="索引与切片"><a href="#索引与切片" class="headerlink" title="索引与切片"></a>索引与切片</h2><h3 id="Basic-indexing-and-Numpy-style-indexing"><a href="#Basic-indexing-and-Numpy-style-indexing" class="headerlink" title="Basic indexing and Numpy-style indexing"></a>Basic indexing and Numpy-style indexing</h3><blockquote>
+<p>在 TensorFlow 中，支持基本的[𝑖],[𝑗] ⋯标准索引方式，也支持通过逗号分隔索引号的索引方式。</p>
+</blockquote>
+<p>推荐用x[1,2,3]这种索引方式</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">x=tf.random.normal([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>],mean=<span class="number">0</span>,stddev=<span class="number">1</span>)</span><br><span class="line">x[<span class="number">0</span>]</span><br><span class="line">x[<span class="number">0</span>][<span class="number">1</span>]</span><br><span class="line">x[<span class="number">0</span>][<span class="number">1</span>][<span class="number">2</span>]</span><br><span class="line">x[<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="start-end-step"><a href="#start-end-step" class="headerlink" title="start : end :step"></a>start : end :step</h3><blockquote>
+<p>与numpy中使用方式相同</p>
+</blockquote>
+<p>为了避免出现像 [: , : , : ,1]这样过多冒号的情况，可以使用⋯符号表示取多个维度上所有的数据，其中维度的数量需根据规则自动推断：当切片方式出现⋯符号时，⋯符号左边的维度将自动对齐到最左边，⋯符号右边的维度将自动对齐到最右边，此时系统再自动推断⋯符号代表的维度数量</p>
+<ul>
+<li><p>读取第 1~2 张图片的G/B 通道数据，实现如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x[<span class="number">0</span>:<span class="number">2</span>,...,<span class="number">1</span>:]</span><br></pre></td></tr></table></figure>
+<p><img src= "/img/loading.gif" data-src="/2020/08/12/tensorflow/tf01/%E5%88%87%E7%89%87.png" style="zoom: 80%;"></p>
+</li>
+</ul>
+<p>特别地，step 可以为负数，考虑最特殊的一种例子，当step = −1时，start: end: −1表示从start 开始，逆序读取至end 结束(不包含end)，索引号𝑒𝑛𝑑 ≤ 𝑠𝑡𝑎𝑟𝑡。考虑一个0~9 的简单序列向量，逆序取到第1 号元素，不包含第1 号</p>
+<h3 id="Selective-Indexing"><a href="#Selective-Indexing" class="headerlink" title="Selective Indexing"></a>Selective Indexing</h3><ul>
+<li><p>tf.gather(params,indices,axis=0)</p>
+<blockquote>
+<p>从params的axis维根据indices的参数值顺序获取切片</p>
+<blockquote>
+<p>只在一个维度中取值</p>
+</blockquote>
+</blockquote>
+<p><img src= "/img/loading.gif" data-src="/2020/08/12/tensorflow/tf01/12389.png" alt></p>
+</li>
+<li><p>tf.gather_nd(  params,  indices,  name=None )</p>
+<blockquote>
+<p>这里的idices可以为[[0, 2], [0, 4], [2, 2]]或[[0], [1]]或([0])或[0, 1]</p>
+<p>类似坐标轴取数</p>
+<blockquote>
+<p>有一点不同的地方是[[2,3]]和[2,3]一个返回向量，一个返回标量</p>
+</blockquote>
+</blockquote>
+</li>
+<li><p>tf.boolean_mask(  tensor,  mask,  name=’boolean_mask’,   axis=None )</p>
+<blockquote>
+<p>根据bool类型mask数组来判断是非保留数据</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line">a=tf.range(<span class="number">5</span>*<span class="number">5</span>*<span class="number">5</span>*<span class="number">5</span>)</span><br><span class="line">a=tf.reshape(a,[<span class="number">5</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">5</span>])</span><br><span class="line">tf.boolean_mask(a,mask=[<span class="literal">True</span>,<span class="literal">True</span>,<span class="literal">False</span>,<span class="literal">False</span>,<span class="literal">True</span>])<span class="comment">#只取0，1，4号第0轴元素</span></span><br><span class="line">tf.boolean_mask(a,mask=[<span class="literal">True</span>,<span class="literal">True</span>,<span class="literal">False</span>,<span class="literal">False</span>,<span class="literal">True</span>]，axis=<span class="number">3</span>)<span class="comment">#只取第3轴的0，1，4号</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="维度变换"><a href="#维度变换" class="headerlink" title="维度变换"></a>维度变换</h2><p>全连接层的向前传播:</p>
+<p>在tensorflow中:$Y=X@W+b$</p>
+<hr>
+<p>其实都差不多</p>
+<h3 id="tf-reshape-x-new-shape"><a href="#tf-reshape-x-new-shape" class="headerlink" title="tf.reshape(x, new_shape)"></a>tf.reshape(x, new_shape)</h3><blockquote>
+<p>通过tf.reshape(x, new_shape)，可以将张量的视图任意地合法改变</p>
+</blockquote>
+<h3 id="tf-expand-dims-x-axis-和-tf-squeeze-x-axis"><a href="#tf-expand-dims-x-axis-和-tf-squeeze-x-axis" class="headerlink" title="tf.expand_dims(x,axis) 和 tf.squeeze(x,axis)"></a>tf.expand_dims(x,axis) 和 tf.squeeze(x,axis)</h3><blockquote>
+<p>tf.expand_dims(x, axis)可在指定的axis 轴前可以插入一个新的维度</p>
+<blockquote>
+<p>需要注意的是，tf.expand_dims 的axis 为正时，表示在当前维度之前插入一个新维度；为<br>负时，表示当前维度之后插入一个新的维度。</p>
+</blockquote>
+<p>tf.squeeze(x,axis)可删除指定轴</p>
+</blockquote>
+<h3 id="tf-transpose-x-perm"><a href="#tf-transpose-x-perm" class="headerlink" title="tf.transpose(x,perm)"></a>tf.transpose(x,perm)</h3><blockquote>
+<p>perm提供新的轴的读取顺序</p>
+</blockquote>
+<hr>
+<h3 id="广播"><a href="#广播" class="headerlink" title="广播"></a>广播</h3><p>tf.broadcast_to(  input, shape, name=None )</p>
+<blockquote>
+<p>几乎不会用到，tensorflow里有与numpy类似的广播机制</p>
+</blockquote>
+<p>将原始矩阵成倍增加</p>
+<h1 id="基本运算"><a href="#基本运算" class="headerlink" title="基本运算"></a>基本运算</h1><p>Outline</p>
+<ul>
+<li><p>+-*/</p>
+</li>
+<li><p>** ， pow ，square</p>
+</li>
+<li><p>sqrt</p>
+</li>
+<li><p>//,%</p>
+</li>
+<li><p>exp,log</p>
+<blockquote>
+<p>tf.math.log  #只以e为底</p>
+<blockquote>
+<p>其他底只能通过对数相除得到</p>
+</blockquote>
+<p>tf.exp</p>
+<blockquote>
+<p>tf2.2 exp已经被移到math模块</p>
+</blockquote>
+</blockquote>
+</li>
+<li><p>@,matmul</p>
+<blockquote>
+<p>类似np.dot</p>
+</blockquote>
+</li>
+<li><p>linear layer</p>
+</li>
+</ul>
+<hr>
+<p>Operation type</p>
+<ul>
+<li><p>element-wise(对应元素运算)</p>
+<ul>
+<li>+-*/</li>
+</ul>
+</li>
+<li><p>matrix-wise</p>
+<ul>
+<li>@,matmul</li>
+</ul>
+</li>
+<li>dim-wise<ul>
+<li>reduce_mean/max/min/sum</li>
+</ul>
+</li>
+</ul>
+<h1 id="前向传播实战"><a href="#前向传播实战" class="headerlink" title="前向传播实战"></a>前向传播实战</h1><p>与python+numpy实现方式类似，但tensorflow提供了自动求导函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># coding: utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># In[1]:</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">from</span> tensorflow <span class="keyword">import</span> keras</span><br><span class="line"><span class="keyword">from</span> tensorflow.keras <span class="keyword">import</span> datasets</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># - 可以使用以下方法屏蔽tensorflow无关信息</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># In[2]:</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line">os.environ[<span class="string">'TF_CPP_MIN_LOG_LEVEL'</span>]=<span class="string">'2'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># - 现在加载文件</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># In[3]:</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">(x,y),_=datasets.mnist.load_data( )</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># In[4]:</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">x=tf.constant(x,dtype=tf.float32)/<span class="number">255</span></span><br><span class="line">y=tf.constant(y,dtype=tf.int32)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># - 现在对数据进行切片并打包</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># In[5]:</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">train_db = tf.data.Dataset.from_tensor_slices((x,y)).batch(<span class="number">128</span>)</span><br><span class="line">loss_data=[]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># - 对权重进行初始化</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># In[6]:</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">w1=tf.Variable(tf.random.truncated_normal([<span class="number">784</span>,<span class="number">256</span>],stddev=<span class="number">0.1</span>))</span><br><span class="line">b1=tf.Variable(tf.zeros([<span class="number">256</span>]))</span><br><span class="line"></span><br><span class="line">w2=tf.Variable(tf.random.truncated_normal([<span class="number">256</span>,<span class="number">128</span>],stddev=<span class="number">0.1</span>))</span><br><span class="line">b2=tf.Variable(tf.zeros([<span class="number">128</span>]))</span><br><span class="line"></span><br><span class="line">w3=tf.Variable(tf.random.truncated_normal([<span class="number">128</span>,<span class="number">10</span>],stddev=<span class="number">0.1</span>))</span><br><span class="line">b3=tf.Variable(tf.zeros([<span class="number">10</span>]))</span><br><span class="line"></span><br><span class="line">lr=<span class="number">1e-3</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># - 向前传播</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># In[7]:</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> range(<span class="number">30</span>):</span><br><span class="line">    <span class="keyword">for</span> step,(x,y) <span class="keyword">in</span> enumerate(train_db):</span><br><span class="line">        x=tf.reshape(x,[<span class="number">-1</span>,<span class="number">28</span>*<span class="number">28</span>])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:</span><br><span class="line">            h1= x@w1 + b1</span><br><span class="line">            h1=tf.nn.relu(h1)</span><br><span class="line"></span><br><span class="line">            h2= h1@w2 + b2</span><br><span class="line">            h2=tf.nn.relu(h2)</span><br><span class="line"></span><br><span class="line">            out= h2@w3 +b3</span><br><span class="line"></span><br><span class="line">            y_onehot=tf.one_hot(y,depth=<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">            loss=tf.square(y_onehot - out)</span><br><span class="line">            loss=tf.reduce_mean(loss)</span><br><span class="line"></span><br><span class="line">        grads=tape.gradient(loss,[w1,b1,w2,b2,w3,b3])</span><br><span class="line"></span><br><span class="line">        w1.assign_sub(lr*grads[<span class="number">0</span>])</span><br><span class="line">        b1.assign_sub(lr*grads[<span class="number">1</span>])</span><br><span class="line">        w2.assign_sub(lr*grads[<span class="number">2</span>])</span><br><span class="line">        b2.assign_sub(lr*grads[<span class="number">3</span>])</span><br><span class="line">        w3.assign_sub(lr*grads[<span class="number">4</span>])</span><br><span class="line">        b3.assign_sub(lr*grads[<span class="number">5</span>])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> step % <span class="number">100</span> == <span class="number">0</span>:</span><br><span class="line">            print(epoch,step,<span class="string">'loss'</span>,float(loss))</span><br><span class="line">            loss_data.append(loss)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># In[8]:</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">plt.plot(loss_data)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p>有几个注意事项:</p>
+<ul>
+<li><p>tf.GradientTape( )默认只监控由tf.Variable创建的traiable=True属性（默认）的变量:</p>
+<p>常用语句:</p>
+<ul>
+<li><p>with tf.GradientTape( ) as tipe:</p>
+</li>
+<li><p>tipe.gradient(f,[value])</p>
+<blockquote>
+<p>对f( value )求导</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>tf.data.Dataset.from_tensor_slices((x,y)).batch(128)</p>
+<ul>
+<li>tf.data.Dataset.from_tensor_slices( )会对最外层分割成单独元素，第0轴</li>
+<li>.batch( )方法可以重新将单独元素打包</li>
+</ul>
+</li>
+<li><p>.assign_sub( )方法可以实现tf.Variable创建的变量的自我更新</p>
+<blockquote>
+<p>因为如果使用w=w-lr*grads ， 经过减法运算后的返回值为tf.tensor , 不为tf.Variable ，会影响下一次循环</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="进阶操作"><a href="#进阶操作" class="headerlink" title="进阶操作"></a>进阶操作</h1><h2 id="合并与分割"><a href="#合并与分割" class="headerlink" title="合并与分割"></a>合并与分割</h2><h3 id="tf-concat-axis"><a href="#tf-concat-axis" class="headerlink" title="tf.concat([,],axis)"></a>tf.concat([,],axis)</h3><blockquote>
+</blockquote>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">prometheus-code</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://prometheus-code.github.io/2020/08/12/tensorflow/tf01/">https://prometheus-code.github.io/2020/08/12/tensorflow/tf01/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://prometheus-code.github.io" target="_blank">一切暗号</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">神经网络</a><a class="post-meta__tags" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8%EF%BC%8Ctensorflow/">深度学习入门，tensorflow</a></div><div class="post_share"><div class="social-share" data-image="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1597325218551&amp;di=c155f06387bf214ef2017c6db8da3e20&amp;imgtype=0&amp;src=http%3A%2F%2Fwww.wdshouji.com%2Fwp%2Fwp-content%2Fuploads%2F2019%2F03%2F0a67a5c11f1647bfd324fa0d0f7faab5.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2020/08/12/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/%E6%94%B9%E5%96%84%E6%B7%B1%E5%B1%82%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%EF%BC%9A%E8%B6%85%E5%8F%82%E6%95%B0%E8%B0%83%E8%AF%95%E3%80%81%E6%AD%A3%E5%88%99%E5%8C%96%E4%BB%A5%E5%8F%8A%E4%BC%98%E5%8C%96/"><img class="next-cover" data-src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1595764414107&amp;di=93ee542045570b12290d1eb21dff2e30&amp;imgtype=0&amp;src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20180319%2F66179109ed054505ba02b054d711dbd1.jpeg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">改善深层神经网络：超参数调试、正则化以及优化</div></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2020/08/12/神经网络/改善深层神经网络：超参数调试、正则化以及优化/" title="改善深层神经网络：超参数调试、正则化以及优化"><img class="relatedPosts_cover" data-src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1595764414107&di=93ee542045570b12290d1eb21dff2e30&imgtype=0&src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20180319%2F66179109ed054505ba02b054d711dbd1.jpeg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2020-08-12</div><div class="relatedPosts_title">改善深层神经网络：超参数调试、正则化以及优化</div></div></a></div><div class="relatedPosts_item"><a href="/2020/08/10/神经网络/迁移学习/" title="迁移学习"><img class="relatedPosts_cover" data-src="https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=13114550,2928413146&fm=26&gp=0.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2020-08-10</div><div class="relatedPosts_title">迁移学习</div></div></a></div><div class="relatedPosts_item"><a href="/2020/08/10/神经网络/卷积神经网络/" title="卷积神经网络"><img class="relatedPosts_cover" data-src="https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=13114550,2928413146&fm=26&gp=0.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2020-08-10</div><div class="relatedPosts_title">卷积神经网络</div></div></a></div><div class="relatedPosts_item"><a href="/2020/08/09/神经网络/与学习相关的技巧/" title="与学习相关的技巧"><img class="relatedPosts_cover" data-src="https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=13114550,2928413146&fm=26&gp=0.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2020-08-09</div><div class="relatedPosts_title">与学习相关的技巧</div></div></a></div><div class="relatedPosts_item"><a href="/2020/08/05/神经网络/神经网络激活函数/" title="神经网络激活函数python实现(代码预览)"><img class="relatedPosts_cover" data-src="https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=13114550,2928413146&fm=26&gp=0.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2020-08-05</div><div class="relatedPosts_title">神经网络激活函数python实现(代码预览)</div></div></a></div><div class="relatedPosts_item"><a href="/2020/08/05/神经网络/神经元的python实现/" title="神经元的python实现(代码预览)"><img class="relatedPosts_cover" data-src="https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=13114550,2928413146&fm=26&gp=0.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2020-08-05</div><div class="relatedPosts_title">神经元的python实现(代码预览)</div></div></a></div></div></div></article></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2020 By prometheus-code</div><div class="framework-info"><span>驱动 </span><a href="https://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><button id="readmode" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font_plus" title="放大字体"><i class="fas fa-plus"></i></button><button id="font_minus" title="缩小字体"><i class="fas fa-minus"></i></button><button class="translate_chn_to_cht" id="translateLink" title="简繁转换">繁</button><button id="darkmode" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+    processEscapes: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  },
+  CommonHTML: {
+    linebreaks: { automatic: true, width: "90% container" }
+  },
+  "HTML-CSS": { 
+    linebreaks: { automatic: true, width: "90% container" }
+  },
+  "SVG": { 
+    linebreaks: { automatic: true, width: "90% container" }
+  }
+});
+</script><script type="text/x-mathjax-config">MathJax.Hub.Queue(function() {
+  var all = MathJax.Hub.getAllJax(), i;
+  for (i=0; i < all.length; i += 1) {
+    all[i].SourceElement().parentNode.className += ' has-jax';
+  }
+});
+</script><script src="https://cdn.jsdelivr.net/npm/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js" async></script></body></html>
